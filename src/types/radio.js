@@ -1,10 +1,10 @@
 var React = require('react');
 var uuid = require('uuid');
-var inArray = require('in-array');
+var OptionEditor = require('../OptionEditor');
 var clone = require('lodash/clone');
-var without = require('lodash/without');
+var reject = require('lodash/reject');
 
-var CheckboxType = React.createClass({
+var RadioType = React.createClass({
   getDefaultProps: function() {
     return {
       editing: false,
@@ -19,7 +19,7 @@ var CheckboxType = React.createClass({
       name: null,
       required: false,
       description: null,
-      answers: [],
+      answer: null,
       options: []
     }
   },
@@ -66,27 +66,31 @@ var CheckboxType = React.createClass({
   },
 
   isChecked: function(option_id) {
-    return inArray(this.state.answers, option_id);
+    return this.state.answer === option_id;
   },
 
-  selected: function(option_id) {
-    if (!inArray(this.state.answers, option_id)) {
-      var answers = clone(this.state.answers);
-      answers.push(option_id);
-      this.setState({answers: answers});
-    }
-    else {
-      var answers = without(this.state.answers, option_id);
-      this.setState({answers: answers});
-    }
+  addOption: function(option_name) {
+    var options = clone(this.state.options);
+    options.push({
+      id: uuid.v4(),
+      name: option_name
+    });
+    this.setState({options: options});
+  },
+
+  removeOption: function(option_id) {
+    var options = reject(this.state.options, function(option) {
+      return option.id === option_id;
+    });
+    this.setState({options: options});
   },
 
   render: function() {
     if (!this.props.editing) {
       var options = this.state.options.map(function(option) {
         return (
-          <label className="checkbox-inline">
-            <input type="checkbox" onClick={this.selected.bind(this, option.id)} checked={this.isChecked(option.id)}/>{option.name}
+          <label className="radio-inline">
+            <input type="radio" onClick={this.selected.bind(this, option.id)} checked={this.isChecked(option.id)}/>{option.name}
           </label>
         )
       }.bind(this));
@@ -101,19 +105,22 @@ var CheckboxType = React.createClass({
     }
     else {
       return (
-        <form>
-          <div className="form-group">
-            <label>Question name</label>
-            <input type="text" className="form-control" placeholder="Question name" onChange={this.nameChanged} value={this.state.name}/>
-          </div>
-          <div className="form-group">
-            <label>Question description</label>
-            <input type="text" className="form-control" placeholder="Question description" onChange={this.descriptionChanged} value={this.state.description}/>
-          </div>
-        </form>
+        <div>
+          <form>
+            <div className="form-group">
+              <label>Question name</label>
+              <input type="text" className="form-control" placeholder="Question name" onChange={this.nameChanged} value={this.state.name}/>
+            </div>
+            <div className="form-group">
+              <label>Question description</label>
+              <input type="text" className="form-control" placeholder="Question description" onChange={this.descriptionChanged} value={this.state.description}/>
+            </div>
+          </form>
+          <OptionEditor options={this.state.options} addCallback={this.addOption} removeCallback={this.removeOption} />
+        </div>
       );
     }
   }
 });
 
-module.exports = CheckboxType;
+module.exports = RadioType;

@@ -3,7 +3,6 @@ var ReactDOM = require('react-dom');
 var uuid = require('uuid');
 var clone = require('lodash/clone');
 var reject = require('lodash/reject');
-var OptionEditor = require('../OptionEditor');
 
 var SelectType = React.createClass({
   getDefaultProps: function() {
@@ -66,11 +65,12 @@ var SelectType = React.createClass({
     });
   },
 
-  addOption: function(option_name) {
+  addOption: function() {
+    var option = ReactDOM.findDOMNode(this.refs.option_name).value;
     var options = clone(this.state.options);
     options.push({
       id: uuid.v4(),
-      name: option_name
+      name: option
     });
     this.setState({options: options});
   },
@@ -100,6 +100,13 @@ var SelectType = React.createClass({
       );
     }
     else {
+      var options = (
+        <ul className="list-group">
+          {this.state.options.map(function(option) {
+            return <li className="list-group-item" onClick={this.removeOption.bind(this, option.id)}>{option.name}</li>;
+          }.bind(this))}
+        </ul>
+      )
       return (
         <div>
           <form>
@@ -112,7 +119,30 @@ var SelectType = React.createClass({
               <input type="text" className="form-control" placeholder="Question description" onChange={this.descriptionChanged} value={this.state.description}/>
             </div>
           </form>
-          <OptionEditor options={this.state.options} addCallback={this.addOption} removeCallback={this.removeOption} />
+          <div className="row">
+            <div className="col-md-6">
+              <div className="panel panel-default">
+                <div className="panel-heading">Add option</div>
+                <div className="panel-body">
+                  <div className="form-group">
+                    <label>Option name</label>
+                    <input type="text" className="form-control" placeholder="Option name" ref="option_name" />
+                  </div>
+                  <br />
+                  <button className="btn btn-default" onClick={this.addOption}>Add option</button>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="panel panel-default">
+                <div className="panel-heading">Current options</div>
+                <div className="panel-body">
+                  <p>Below are the current options for this question.<br/><b>You can delete options by clicking on them.</b></p>
+                  {options}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }

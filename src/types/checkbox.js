@@ -3,6 +3,8 @@ var uuid = require('uuid');
 var inArray = require('in-array');
 var clone = require('lodash/clone');
 var without = require('lodash/without');
+var OptionEditor = require('../OptionEditor');
+var reject = require('lodash/reject');
 
 var CheckboxType = React.createClass({
   getDefaultProps: function() {
@@ -81,6 +83,22 @@ var CheckboxType = React.createClass({
     }
   },
 
+  addOption: function(option_name) {
+    var options = clone(this.state.options);
+    options.push({
+      id: uuid.v4(),
+      name: option_name
+    });
+    this.setState({options: options});
+  },
+
+  removeOption: function(option_id) {
+    var options = reject(this.state.options, function(option) {
+      return option.id === option_id;
+    });
+    this.setState({options: options});
+  },
+
   render: function() {
     if (!this.props.editing) {
       var options = this.state.options.map(function(option) {
@@ -101,16 +119,20 @@ var CheckboxType = React.createClass({
     }
     else {
       return (
-        <form>
-          <div className="form-group">
-            <label>Question name</label>
-            <input type="text" className="form-control" placeholder="Question name" onChange={this.nameChanged} value={this.state.name}/>
-          </div>
-          <div className="form-group">
-            <label>Question description</label>
-            <input type="text" className="form-control" placeholder="Question description" onChange={this.descriptionChanged} value={this.state.description}/>
-          </div>
-        </form>
+        <div>
+          <form>
+            <div className="form-group">
+              <label>Question name</label>
+              <input type="text" className="form-control" placeholder="Question name" onChange={this.nameChanged} value={this.state.name}/>
+            </div>
+            <div className="form-group">
+              <label>Question description</label>
+              <input type="text" className="form-control" placeholder="Question description" onChange={this.descriptionChanged} value={this.state.description}/>
+            </div>
+          </form>
+
+          <OptionEditor options={this.state.options} addCallback={this.addOption} removeCallback={this.removeOption} />
+        </div>
       );
     }
   }

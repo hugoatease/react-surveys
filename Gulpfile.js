@@ -8,7 +8,7 @@ gulp.task('build', ['app']);
 
 gulp.task('app', function() {
   return browserify({
-    entries: ['./index.js'],
+    entries: ['./src/index.js'],
     transform: [reactify],
     standalone: 'surveys'
   })

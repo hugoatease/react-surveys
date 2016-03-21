@@ -87,8 +87,14 @@ var RadioType = React.createClass({
     else {
       return (
         <form>
-          <input type="text" className="form-control" placeholder="Question name" onChange={this.nameChanged} value={this.state.name}/>
-          <input type="text" className="form-control" placeholder="Question description" onChange={this.descriptionChanged} value={this.state.description}/>
+          <div className="form-group">
+            <label>Question name</label>
+            <input type="text" className="form-control" placeholder="Question name" onChange={this.nameChanged} value={this.state.name}/>
+          </div>
+          <div className="form-group">
+            <label>Question description</label>
+            <input type="text" className="form-control" placeholder="Question description" onChange={this.descriptionChanged} value={this.state.description}/>
+          </div>
         </form>
       );
     }
