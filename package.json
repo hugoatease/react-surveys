@@ -1,13 +1,14 @@
 {
   "name": "react-surveys",
-  "version": "1.0.1",
-  "description": "",
+  "version": "1.0.2",
+  "description": "Surveys editing and answering in React.js",
   "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hugo Caille",
   "license": "Apache-2.0",
+  "repository": "hugoatease/react-surveys",
   "dependencies": {
     "bootstrap": "^3.3.6",
     "in-array": "^0.1.0",

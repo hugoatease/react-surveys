@@ -1,7 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var types = require('./types');
-var example = require('../example.json');
 var inArray = require('in-array');
 var keys = require('lodash/keys');
 var uuid = require('uuid');
@@ -198,6 +197,4 @@ var Survey = React.createClass({
   }
 });
 
-module.exports = function(container, props) {
-  ReactDOM.render(<Survey survey={example} {...props} />, container);
-}
+module.exports = Survey;
