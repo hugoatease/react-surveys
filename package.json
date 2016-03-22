@@ -1,6 +1,6 @@
 {
   "name": "react-surveys",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "Surveys editing and answering in React.js",
   "main": "./lib/index.js",
   "scripts": {
@@ -9,6 +9,7 @@
   "author": "Hugo Caille",
   "license": "Apache-2.0",
   "repository": "hugoatease/react-surveys",
+  "files": ["lib"],
   "dependencies": {
     "bootstrap": "^3.3.6",
     "in-array": "^0.1.0",
