@@ -5,6 +5,7 @@ var clone = require('lodash/clone');
 var without = require('lodash/without');
 var OptionEditor = require('../OptionEditor');
 var reject = require('lodash/reject');
+var assign = require('lodash/assign');
 
 var CheckboxType = React.createClass({
   getDefaultProps: function() {
@@ -27,19 +28,24 @@ var CheckboxType = React.createClass({
   },
 
   componentDidMount: function() {
-    if (!this.props.editing) {
-      this.setState({
-        id: this.props.id,
-        name: this.props.name,
-        required: this.props.required,
-        description: this.props.description,
-        options: this.props.options
-      });
-    }
-    else {
-      this.setState({
-        id: uuid.v4()
-      });
+    this.setState({
+      id: this.props.id,
+      name: this.props.name,
+      required: this.props.required,
+      description: this.props.description,
+      options: this.props.options
+    });
+  },
+
+  editUpdate: function(updates) {
+    if (this.props.editCallback) {
+      this.props.editCallback(assign({
+        id: this.state.id,
+        name: this.state.name,
+        required: this.state.required,
+        description: this.state.description,
+        options: this.state.options
+      }, updates));
     }
   },
 
@@ -52,13 +58,15 @@ var CheckboxType = React.createClass({
   nameChanged: function(ev) {
     this.setState({
       name: ev.target.value
-    })
+    });
+    this.editUpdate({name: ev.target.value});
   },
 
   descriptionChanged: function(ev) {
     this.setState({
       description: ev.target.value
     })
+    this.editUpdate({description: ev.target.value});
   },
 
   selected: function(option_id) {
@@ -90,6 +98,7 @@ var CheckboxType = React.createClass({
       name: option_name
     });
     this.setState({options: options});
+    this.editUpdate({options: options});
   },
 
   removeOption: function(option_id) {
@@ -97,6 +106,7 @@ var CheckboxType = React.createClass({
       return option.id === option_id;
     });
     this.setState({options: options});
+    this.editUpdate({options: options});
   },
 
   render: function() {

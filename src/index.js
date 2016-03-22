@@ -7,6 +7,7 @@ var keys = require('lodash/keys');
 var uuid = require('uuid');
 var clone = require('lodash/clone');
 var merge = require('lodash/merge');
+var find = require('lodash/find');
 
 var Survey = React.createClass({
   getDefaultProps: function() {
@@ -56,18 +57,32 @@ var Survey = React.createClass({
       name: null,
       description: null,
       required: false,
-      type: type
+      type: type,
+      options: []
     });
     this.setState({
       questions: questions
     });
   },
 
+  editQuestion: function(question) {
+    var questions = clone(this.state.questions);
+    var old = find(questions, {id: question.id});
+    old.name = question.name;
+    old.required = question.required;
+    old.description = question.description;
+    if (question.options) {
+      old.options = question.options;
+    }
+    this.setState({questions: questions});
+  },
+
   render: function() {
     var questions = this.state.questions.map(function(question) {
       if (inArray(keys(types), question.type)) {
         return React.createElement(types[question.type], merge(question, {
-          editing: this.props.editing
+          editing: this.props.editing,
+          editCallback: this.editQuestion
         }));
       }
     }.bind(this));

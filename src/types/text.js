@@ -1,5 +1,6 @@
 var React = require('react');
 var uuid = require('uuid');
+var assign = require('lodash/assign');
 
 var TextType = React.createClass({
   getDefaultProps: function() {
@@ -21,19 +22,12 @@ var TextType = React.createClass({
   },
 
   componentDidMount: function() {
-    if (!this.props.editing) {
-      this.setState({
-        id: this.props.id,
-        name: this.props.name,
-        required: this.props.required,
-        description: this.props.description
-      });
-    }
-    else {
-      this.setState({
-        id: uuid.v4()
-      });
-    }
+    this.setState({
+      id: this.props.id,
+      name: this.props.name,
+      required: this.props.required,
+      description: this.props.description
+    });
   },
 
   answerChanged: function(ev) {
@@ -42,16 +36,25 @@ var TextType = React.createClass({
     });
   },
 
+  editUpdate: function(updates) {
+    if (this.props.editCallback) {
+      this.props.editCallback(assign({
+        id: this.state.id,
+        name: this.state.name,
+        required: this.state.required,
+        description: this.state.description
+      }, updates))
+    }
+  },
+
   nameChanged: function(ev) {
-    this.setState({
-      name: ev.target.value
-    })
+    this.setState({name: ev.target.value});
+    this.editUpdate({name: ev.target.value});
   },
 
   descriptionChanged: function(ev) {
-    this.setState({
-      description: ev.target.value
-    })
+    this.setState({description: ev.target.value});
+    this.editUpdate({description: ev.target.value});
   },
 
   render: function() {

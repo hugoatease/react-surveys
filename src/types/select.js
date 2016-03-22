@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var uuid = require('uuid');
 var clone = require('lodash/clone');
 var reject = require('lodash/reject');
+var assign = require('lodash/assign');
 
 var SelectType = React.createClass({
   getDefaultProps: function() {
@@ -25,19 +26,24 @@ var SelectType = React.createClass({
   },
 
   componentDidMount: function() {
-    if (!this.props.editing) {
-      this.setState({
-        id: this.props.id,
-        name: this.props.name,
-        required: this.props.required,
-        description: this.props.description,
-        options: this.props.options
-      });
-    }
-    else {
-      this.setState({
-        id: uuid.v4()
-      });
+    this.setState({
+      id: this.props.id,
+      name: this.props.name,
+      required: this.props.required,
+      description: this.props.description,
+      options: this.props.options
+    });
+  },
+
+  editUpdate: function(updates) {
+    if (this.props.editCallback) {
+      this.props.editCallback(assign({
+        id: this.state.id,
+        name: this.state.name,
+        required: this.state.required,
+        description: this.state.description,
+        options: this.state.options
+      }, updates));
     }
   },
 
@@ -50,13 +56,15 @@ var SelectType = React.createClass({
   nameChanged: function(ev) {
     this.setState({
       name: ev.target.value
-    })
+    });
+    this.editUpdate({name: ev.target.value});
   },
 
   descriptionChanged: function(ev) {
     this.setState({
       description: ev.target.value
-    })
+    });
+    this.editUpdate({description: ev.target.value});
   },
 
   selected: function(ev) {
@@ -73,6 +81,7 @@ var SelectType = React.createClass({
       name: option
     });
     this.setState({options: options});
+    this.editUpdate({options: options});
   },
 
   removeOption: function(option_id) {
@@ -80,6 +89,7 @@ var SelectType = React.createClass({
       return option.id === option_id;
     });
     this.setState({options: options});
+    this.editUpdate({options: options});
   },
 
   render: function() {
