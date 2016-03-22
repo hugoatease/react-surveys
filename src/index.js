@@ -8,6 +8,7 @@ var uuid = require('uuid');
 var clone = require('lodash/clone');
 var merge = require('lodash/merge');
 var find = require('lodash/find');
+var reject = require('lodash/reject');
 
 var Survey = React.createClass({
   getDefaultProps: function() {
@@ -73,6 +74,13 @@ var Survey = React.createClass({
     });
   },
 
+  removeQuestion: function(id) {
+    var questions = reject(this.state.questions, function(question) {
+      return question.id === id;
+    });
+    this.setState({questions: questions});
+  },
+
   editQuestion: function(question) {
     var questions = clone(this.state.questions);
     var old = find(questions, {id: question.id});
@@ -122,13 +130,20 @@ var Survey = React.createClass({
 
   render: function() {
     var questions = this.state.questions.map(function(question) {
+      var parts = [];
       if (inArray(keys(types), question.type)) {
-        return React.createElement(types[question.type], merge(question, {
+        parts.push(React.createElement(types[question.type], merge(question, {
           editing: this.props.editing,
           editCallback: this.editQuestion,
           answerCallback: this.answerQuestion
-        }));
+        })));
       }
+      if (this.props.editing) {
+        parts.push(
+          <button className="btn btn-danger" onClick={this.removeQuestion.bind(this, question.id)}>Remove question</button>
+        );
+      }
+      return parts;
     }.bind(this));
 
     if (!this.props.editing) {
