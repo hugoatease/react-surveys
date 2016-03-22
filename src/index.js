@@ -12,7 +12,9 @@ var find = require('lodash/find');
 var Survey = React.createClass({
   getDefaultProps: function() {
     return {
-      editing: false
+      editing: false,
+      surveyCallback: null,
+      answersCallback: null
     }
   },
 
@@ -99,6 +101,25 @@ var Survey = React.createClass({
     }
   },
 
+  submit: function() {
+    if (this.props.surveyCallback) {
+      this.props.surveyCallback({
+        id: this.state.id,
+        name: this.state.name,
+        description: this.state.description,
+        author: this.state.author,
+        questions: this.state.questions
+      });
+    }
+
+    if (this.props.answersCallback) {
+      this.props.answersCallback({
+        id: this.state.id,
+        answers: this.state.answers
+      });
+    }
+  },
+
   render: function() {
     var questions = this.state.questions.map(function(question) {
       if (inArray(keys(types), question.type)) {
@@ -118,6 +139,8 @@ var Survey = React.createClass({
           <h4>{this.state.author}</h4>
           <hr />
           {questions}
+          <br />
+          <button className="btn btn-success" onClick={this.submit}>Submit</button>
         </div>
       );
     }
@@ -152,6 +175,8 @@ var Survey = React.createClass({
             </div>
           </div>
           {questions}
+          <br />
+          <button className="btn btn-success" onClick={this.submit}>Submit</button>
         </div>
       );
     }
@@ -159,5 +184,5 @@ var Survey = React.createClass({
 });
 
 module.exports = function(container, props) {
-  ReactDOM.render(<Survey {...props} survey={example} />, container);
+  ReactDOM.render(<Survey survey={example} {...props} />, container);
 }
