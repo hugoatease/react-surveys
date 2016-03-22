@@ -2,11 +2,18 @@ var gulp = require('gulp');
 var browserify = require('browserify');
 var reactify = require('reactify');
 var source = require('vinyl-source-stream');
+var babel = require('gulp-babel');
 
 gulp.task('default', ['build']);
-gulp.task('build', ['app']);
+gulp.task('build', ['lib', 'bundle']);
 
-gulp.task('app', function() {
+gulp.task('lib', function() {
+  return gulp.src('./src/**/*.js')
+    .pipe(babel())
+    .pipe(gulp.dest('lib/'));
+});
+
+gulp.task('bundle', function() {
   return browserify({
     entries: ['./surveys.js'],
     transform: [reactify],
@@ -14,5 +21,5 @@ gulp.task('app', function() {
   })
   .bundle()
   .pipe(source('surveys.js'))
-  .pipe(gulp.dest('./dist'));
+  .pipe(gulp.dest('dist/'));
 });
