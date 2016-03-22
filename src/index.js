@@ -131,7 +131,7 @@ var Survey = React.createClass({
     var questions = this.state.questions.map(function(question) {
       var parts = [];
       if (inArray(keys(types), question.type)) {
-        parts.push(React.createElement(types[question.type], merge(question, {
+        parts.push(React.createElement(types[question.type], merge(clone(question), {
           editing: this.props.editing,
           editCallback: this.editQuestion,
           answerCallback: this.answerQuestion
