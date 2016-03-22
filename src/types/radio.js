@@ -47,10 +47,13 @@ var RadioType = React.createClass({
     }
   },
 
-  answerChanged: function(ev) {
-    this.setState({
-      answer: ev.target.value
-    });
+  editAnswer: function(answer) {
+    if (this.props.answerCallback) {
+      this.props.answerCallback({
+        id: this.state.id,
+        answer: answer
+      });
+    }
   },
 
   nameChanged: function(ev) {
@@ -71,6 +74,7 @@ var RadioType = React.createClass({
     this.setState({
       answer: option_id
     });
+    this.editAnswer(option_id);
   },
 
   isChecked: function(option_id) {

@@ -49,10 +49,13 @@ var CheckboxType = React.createClass({
     }
   },
 
-  answerChanged: function(ev) {
-    this.setState({
-      answer: ev.target.value
-    });
+  editAnswer: function(answer) {
+    if (this.props.answerCallback) {
+      this.props.answerCallback({
+        id: this.state.id,
+        answer: answer
+      });
+    }
   },
 
   nameChanged: function(ev) {
@@ -69,12 +72,6 @@ var CheckboxType = React.createClass({
     this.editUpdate({description: ev.target.value});
   },
 
-  selected: function(option_id) {
-    this.setState({
-      answer: option_id
-    });
-  },
-
   isChecked: function(option_id) {
     return inArray(this.state.answers, option_id);
   },
@@ -84,10 +81,12 @@ var CheckboxType = React.createClass({
       var answers = clone(this.state.answers);
       answers.push(option_id);
       this.setState({answers: answers});
+      this.editAnswer(answers);
     }
     else {
       var answers = without(this.state.answers, option_id);
       this.setState({answers: answers});
+      this.editAnswer(answers);
     }
   },
 

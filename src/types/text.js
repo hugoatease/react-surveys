@@ -34,6 +34,7 @@ var TextType = React.createClass({
     this.setState({
       answer: ev.target.value
     });
+    this.editAnswer(ev.target.value);
   },
 
   editUpdate: function(updates) {
@@ -44,6 +45,15 @@ var TextType = React.createClass({
         required: this.state.required,
         description: this.state.description
       }, updates))
+    }
+  },
+
+  editAnswer: function(answer) {
+    if (this.props.answerCallback) {
+      this.props.answerCallback({
+        id: this.state.id,
+        answer: answer
+      });
     }
   },
 

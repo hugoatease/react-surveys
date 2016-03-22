@@ -33,6 +33,12 @@ var SelectType = React.createClass({
       description: this.props.description,
       options: this.props.options
     });
+    if (this.props.options.length > 0 && this.props.id && this.props.answerCallback) {
+      this.props.answerCallback({
+        id: this.props.id,
+        answer: this.props.options[0].id
+      });
+    }
   },
 
   editUpdate: function(updates) {
@@ -47,10 +53,20 @@ var SelectType = React.createClass({
     }
   },
 
+  editAnswer: function(answer) {
+    if (this.props.answerCallback) {
+      this.props.answerCallback({
+        id: this.state.id,
+        answer: answer
+      });
+    }
+  },
+
   answerChanged: function(ev) {
     this.setState({
       answer: ev.target.value
     });
+    this.editAnswer(ev.target.value);
   },
 
   nameChanged: function(ev) {
@@ -65,12 +81,6 @@ var SelectType = React.createClass({
       description: ev.target.value
     });
     this.editUpdate({description: ev.target.value});
-  },
-
-  selected: function(ev) {
-    this.setState({
-      answer: ev.target.value
-    });
   },
 
   addOption: function() {
@@ -95,7 +105,7 @@ var SelectType = React.createClass({
   render: function() {
     if (!this.props.editing) {
       var options = (
-        <select className="form-control" selected={this.state.answer} onChange={this.selected}>
+        <select className="form-control" selected={this.state.answer} onChange={this.answerChanged}>
           {this.state.options.map(function(option) {
             return <option value={option.id}>{option.name}</option>;
           }.bind(this))}

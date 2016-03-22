@@ -22,7 +22,8 @@ var Survey = React.createClass({
       name: null,
       description: null,
       author: null,
-      questions: []
+      questions: [],
+      answers: []
     }
   },
 
@@ -31,9 +32,14 @@ var Survey = React.createClass({
       this.setState(this.props.survey);
     }
     else {
-      this.setState({
-        id: uuid.v4()
-      });
+      if (this.props.survey) {
+        this.setState(this.props.survey);
+      }
+      else {
+        this.setState({
+          id: uuid.v4()
+        });
+      }
     }
   },
 
@@ -77,12 +83,29 @@ var Survey = React.createClass({
     this.setState({questions: questions});
   },
 
+  answerQuestion: function(answer) {
+    var answers = clone(this.state.answers);
+    var old = find(answers, {question: answer.id});
+    if (!old) {
+      answers.push({
+        question: answer.id,
+        answer: answer.answer
+      });
+      this.setState({answers: answers});
+    }
+    else {
+      old.answer = answer.answer;
+      this.setState({answers: answers});
+    }
+  },
+
   render: function() {
     var questions = this.state.questions.map(function(question) {
       if (inArray(keys(types), question.type)) {
         return React.createElement(types[question.type], merge(question, {
           editing: this.props.editing,
-          editCallback: this.editQuestion
+          editCallback: this.editQuestion,
+          answerCallback: this.answerQuestion
         }));
       }
     }.bind(this));
@@ -136,5 +159,5 @@ var Survey = React.createClass({
 });
 
 module.exports = function(container, props) {
-  ReactDOM.render(<Survey {...props} editing={true} />, container);
+  ReactDOM.render(<Survey {...props} survey={example} />, container);
 }
