@@ -45,6 +45,12 @@ var Survey = React.createClass({
     }
   },
 
+  componentWillUpdate: function(nextProps) {
+    if (nextProps.survey) {
+      this.setState(nextProps.survey);
+    }
+  },
+
   nameChanged: function(ev) {
     this.setState({
       name: ev.target.value
