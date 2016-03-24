@@ -46,7 +46,7 @@ var Survey = React.createClass({
   },
 
   componentWillUpdate: function(nextProps) {
-    if (nextProps.survey) {
+    if (nextProps.survey !== this.props.survey) {
       this.setState(nextProps.survey);
     }
   },
