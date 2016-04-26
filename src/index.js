@@ -195,6 +195,7 @@ var Survey = React.createClass({
             </div>
           </div>
           {questions}
+          {this.props.children}
           <br />
           <button className="btn btn-success" onClick={this.submit}>Submit</button>
         </div>
